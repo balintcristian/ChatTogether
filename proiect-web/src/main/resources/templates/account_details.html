@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Account Details</h2>
+    <form>
+        <div class="form-group">
+            <label for="username">Login Username:</label>
+            <input type="text" class="form-control" id="username" value="exampleuser" readonly>
+        </div>
+        <div class="form-group">
+            <label for="nickname">Nickname:</label>
+            <input type="text" class="form-control" id="nickname" placeholder="Enter your nickname">
+        </div>
+        <button type="button" class="btn btn-primary" id="saveChanges">Save Changes</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(() => {
+        $.ajax({
+                type: "GET",
+                url: "/user/get",
+                contentType: "application/json",
+                success: userDataDTO => {
+                    document.getElementById('username').value = userDataDTO.loginUsername;
+                    document.getElementById('nickname').value = userDataDTO.nickname;
+                    console.log("data fetched");
+                },
+                error: () => {
+                    console.error("data not fetched");
+                }
+            });
+    });
+
+    // JavaScript code for handling the "Save Changes" button click
+    document.getElementById('saveChanges').addEventListener('click', () => {
+        const newNickname = document.getElementById('nickname').value;
+        $.ajax({
+                type: "PATCH",
+                url: `/user/patch_nickname/${newNickname}`,
+                contentType: "application/json",
+                success: () => {
+                    console.log("data saved");
+                },
+                error: () => {
+                    console.error("data not saved");
+                }
+            });
+    });
+</script>
+</body>
+</html>

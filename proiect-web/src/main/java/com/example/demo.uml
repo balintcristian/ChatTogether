@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/User/Documents/GitHub/proiect-web/src/main/java/com/example/demo</OriginalElement>
+  <nodes>
+    <node x="-136.0" y="244.5">com.example.demo.repository.ConversationRepository</node>
+    <node x="184.0" y="220.0">com.example.demo.persistence.Conversation</node>
+    <node x="265.00000000000006" y="1693.0">com.example.demo.controller.UserController</node>
+    <node x="121.0" y="1849.0">com.example.demo.security.CorsFilter</node>
+    <node x="1005.0" y="10.5">com.example.demo.model.MessageDTO</node>
+    <node x="-98.5" y="1520.0">com.example.demo.security.CustomUserDetailsService</node>
+    <node x="286.75000000000006" y="1335.0">com.example.demo.repository.UserRepository</node>
+    <node x="59.25" y="406.0">com.example.demo.service.ConversationService</node>
+    <node x="1228.0" y="-14.0">com.example.demo.persistence.Message</node>
+    <node x="839.0" y="1837.0">com.example.demo.controller.WebController</node>
+    <node x="16.75" y="640.0">com.example.demo.controller.ConversationController</node>
+    <node x="619.75" y="1484.0">com.example.demo.service.UserService</node>
+    <node x="-136.0" y="844.5">com.example.demo.repository.ConversationUserRepository</node>
+    <node x="818.7499999999999" y="429.0">com.example.demo.controller.MessageController</node>
+    <node x="899.25" y="244.0">com.example.demo.service.MessageService</node>
+    <node x="611.0" y="1849.0">com.example.demo.DemoApplication</node>
+    <node x="1048.0" y="1837.0">com.example.demo.websocket.WebSocketConfig</node>
+    <node x="765.0" y="1693.0">com.example.demo.controller.AuthController</node>
+    <node x="694.75" y="1323.0">com.example.demo.model.UserDataDTO</node>
+    <node x="259.0" y="820.5">com.example.demo.model.ConversationUserDTO</node>
+    <node x="505.0" y="796.0">com.example.demo.persistence.ConversationUser</node>
+    <node x="-136.0" y="1849.0">com.example.demo.model.UserCredentialsDTO</node>
+    <node x="121.25000000000006" y="1191.0">com.example.demo.controller.ConversationUserController</node>
+    <node x="409.0" y="244.5">com.example.demo.model.ConversationDTO</node>
+    <node x="88.75000000000006" y="1006.0">com.example.demo.service.ConversationUserService</node>
+    <node x="-136.0" y="1669.0">com.example.demo.security.SecurityConfig</node>
+    <node x="189.5" y="-14.0">com.example.demo.persistence.User</node>
+    <node x="659.0" y="58.5">com.example.demo.repository.MessageRepository</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.example.demo.controller.UserController" target="com.example.demo.service.UserService" relationship="TO_ONE">
+      <point x="-5.6843418860808015E-14" y="-43.5" />
+      <point x="505.0" y="1644.0" />
+      <point x="780.75" y="1644.0" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="com.example.demo.service.ConversationService" target="com.example.demo.persistence.Conversation" relationship="CREATE">
+      <point x="135.78050297504183" y="-88.33584889184698" />
+      <point x="398.5305029750418" y="386.0" />
+      <point x="399.0" y="386.0" />
+      <point x="399.0" y="376.0" />
+      <point x="286.5" y="376.0" />
+      <point x="0.0" y="68.0" />
+    </edge>
+    <edge source="com.example.demo.persistence.Conversation" target="com.example.demo.persistence.User" relationship="TO_MANY">
+      <point x="32.51492658901827" y="-68.38398328119797" />
+      <point x="319.0149265890183" y="193.77687954742098" />
+      <point x="319.0149265890183" y="165.30989928785363" />
+      <point x="33.202345797004966" y="87.30989928785363" />
+    </edge>
+    <edge source="com.example.demo.controller.ConversationController" target="com.example.demo.service.ConversationService" relationship="TO_ONE">
+      <point x="0.0" y="-55.5" />
+      <point x="0.0" y="92.0" />
+    </edge>
+    <edge source="com.example.demo.persistence.User" target="com.example.demo.persistence.Conversation" relationship="TO_MANY">
+      <point x="-32.327530702162846" y="94.11964581697163" />
+      <point x="254.17246929783715" y="195.37240370049915" />
+      <point x="254.17246929783715" y="220.92640958402654" />
+      <point x="-33.01494991014954" y="-67.07359041597346" />
+    </edge>
+    <edge source="com.example.demo.service.ConversationUserService" target="com.example.demo.model.ConversationUserDTO" relationship="CREATE">
+      <point x="119.0" y="-67.5" />
+      <point x="445.75000000000006" y="986.0" />
+      <point x="445.75" y="986.0" />
+      <point x="445.75" y="981.0" />
+      <point x="372.0" y="981.0" />
+      <point x="0.0" y="55.5" />
+    </edge>
+    <edge source="com.example.demo.service.MessageService" target="com.example.demo.repository.MessageRepository" relationship="TO_ONE">
+      <point x="-88.25" y="-67.5" />
+      <point x="987.5" y="224.0" />
+      <point x="822.0" y="224.0" />
+      <point x="0.0" y="31.5" />
+    </edge>
+    <edge source="com.example.demo.service.MessageService" target="com.example.demo.model.MessageDTO" relationship="CREATE">
+      <point x="88.25" y="-67.5" />
+      <point x="1164.0" y="219.0" />
+      <point x="1106.5" y="219.0" />
+      <point x="0.0" y="79.5" />
+    </edge>
+    <edge source="com.example.demo.service.ConversationService" target="com.example.demo.repository.ConversationRepository" relationship="TO_ONE">
+      <point x="-101.75" y="-92.0" />
+      <point x="161.0" y="386.0" />
+      <point x="14.0" y="386.0" />
+      <point x="0.0" y="43.5" />
+    </edge>
+    <edge source="com.example.demo.service.MessageService" target="com.example.demo.persistence.Message" relationship="CREATE">
+      <point x="88.25" y="-67.5" />
+      <point x="1164.0" y="219.0" />
+      <point x="1329.5" y="219.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="com.example.demo.controller.ConversationUserController" target="com.example.demo.service.ConversationUserService" relationship="TO_ONE">
+      <point x="0.0" y="-43.5" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="com.example.demo.service.ConversationUserService" target="com.example.demo.repository.ConversationUserRepository" relationship="TO_ONE">
+      <point x="-119.0" y="-67.5" />
+      <point x="207.75000000000006" y="986.0" />
+      <point x="51.5" y="986.0" />
+      <point x="0.0" y="31.5" />
+    </edge>
+    <edge source="com.example.demo.service.ConversationService" target="com.example.demo.model.ConversationDTO" relationship="CREATE">
+      <point x="135.78050297504183" y="-87.64842968386029" />
+      <point x="398.5305029750418" y="386.0" />
+      <point x="399.0" y="386.0" />
+      <point x="399.0" y="376.0" />
+      <point x="511.5" y="376.0" />
+      <point x="0.0" y="43.5" />
+    </edge>
+    <edge source="com.example.demo.security.SecurityConfig" target="com.example.demo.security.CustomUserDetailsService" relationship="TO_ONE">
+      <point x="0.0" y="-67.5" />
+      <point x="0.0" y="31.5" />
+    </edge>
+    <edge source="com.example.demo.security.CustomUserDetailsService" target="com.example.demo.repository.UserRepository" relationship="TO_ONE">
+      <point x="0.0" y="-31.5" />
+      <point x="54.5" y="1459.0" />
+      <point x="455.75" y="1459.0" />
+      <point x="0.0" y="43.5" />
+    </edge>
+    <edge source="com.example.demo.controller.MessageController" target="com.example.demo.service.MessageService" relationship="TO_ONE">
+      <point x="0.0" y="-43.5" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="com.example.demo.service.UserService" target="com.example.demo.model.UserDataDTO" relationship="CREATE">
+      <point x="5.337328266222812" y="-51.34633876871885" />
+      <point x="786.0873282662228" y="1459.0" />
+      <point x="785.75" y="1459.0" />
+      <point x="0.0" y="55.5" />
+    </edge>
+    <edge source="com.example.demo.controller.AuthController" target="com.example.demo.service.UserService" relationship="TO_ONE">
+      <point x="0.0" y="-43.5" />
+      <point x="1056.5" y="1644.0" />
+      <point x="780.75" y="1644.0" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="com.example.demo.service.ConversationUserService" target="com.example.demo.persistence.ConversationUser" relationship="CREATE">
+      <point x="119.0" y="-67.5" />
+      <point x="445.75000000000006" y="981.0" />
+      <point x="602.0" y="981.0" />
+      <point x="0.0" y="80.0" />
+    </edge>
+    <edge source="com.example.demo.service.UserService" target="com.example.demo.repository.UserRepository" relationship="TO_ONE">
+      <point x="-80.5" y="-67.5" />
+      <point x="700.25" y="1459.0" />
+      <point x="455.75" y="1459.0" />
+      <point x="0.0" y="43.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.7448148001269042" showDependencies="true" x="596.8617781031604" y="231.45599999999968" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

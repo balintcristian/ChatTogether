@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversations and Messages</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            overflow-y: hidden;
+        }
+
+        .conversation-list {
+            width: 100%;
+            height: 90vh;
+            overflow-y: scroll;
+        }
+
+        .messages {
+            width: 100%;
+            height: 85%;
+            overflow-y: scroll;
+        }
+
+        .fixed-size-textarea {
+            height: 100%;
+            resize: none;
+        }
+
+        .invisible-element {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left Side: Conversations -->
+            <div class="col-3 border-right">
+                <div class="text-center mb-3">
+                    <button class="btn btn-primary account-details" id="account-details-btn">Account Details</button>
+                    <button class="btn btn-primary">New Conversation</button>
+                    <button class="btn btn-danger" id="logout-btn">Logout</button>
+                </div>
+                <div class="list-group conversation-list" id="conversationList">
+                    <!-- Conversation items will be dynamically added here -->
+                </div>
+            </div>
+            <!-- Right Side: container for Messages and Action Buttons -->
+            <div class="col-9" style="height: 100vh;">
+                <!-- Container for Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary invite-to-conversation invisible-element"
+                        id="invite-to-conversation-btn">Invite to Conversation</button>
+                    <button class="btn btn-warning leave-conversation invisible-element"
+                        id="leave-conversation-btn">Leave Conversation</button>
+                    <button class="btn btn-danger delete-conversation invisible-element"
+                        id="delete-conversation-btn">Delete Conversation</button>
+                </div>
+                <!-- Scrollable container for Messages -->
+                <div class="messages">
+                    <!-- Messages for the selected conversation will be displayed here -->
+                </div>
+                <!-- Container for Text Area and Send Button -->
+                <div class="message-input" style="display: flex; flex-direction: row;">
+                    <textarea class="form-control fixed-size-textarea invisible-element" id="text-area"></textarea>
+                    <button class="btn btn-success send-message invisible-element" id="send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script>
+        // Global variables
+        var selectedConversationId = -1;
+        var stompClient = null;
+        var subscription = null;
+
+        // Elements
+        const accountDetailsButton = document.getElementById("account-details-btn");
+        const logoutButton = document.getElementById("logout-btn");
+        const conversationList = document.querySelector(".conversation-list");
+        const messagesArea = document.querySelector(".messages");
+        const inviteButton = document.getElementById("invite-to-conversation-btn");
+        const leaveConversationButton = document.getElementById("leave-conversation-btn");
+        const deleteConversationButton = document.getElementById("delete-conversation-btn");
+        const sendButton = document.getElementById("send-btn");
+        const textArea = document.getElementById("text-area");
+
+        // On load, conversations are fetched and added in the interface
+        $(document).ready(() => {
+            $.ajax({
+                type: "GET",
+                url: "/conversations/get",
+                contentType: "application/json",
+                success: conversations => {
+                    // Get the conversation list container
+                    const conversationList = $("#conversationList");
+
+                    // Dynamically add conversation items
+                    conversations.forEach(conversation => {
+                        const listItem = $(
+                            "<p class='list-group-item list-group-item-action'></p>"
+                        ).text(conversation.conversationName);
+                        listItem.attr('id', conversation.id);
+                        conversationList.append(listItem);
+                    });
+                },
+                error: () => {
+                    console.error("error fetch conversations");
+                }
+            });
+
+            connect();
+        });
+
+        // Add click event listeners to conversation list items
+        conversationList.addEventListener("click", event => {
+            if (event.target.classList.contains("list-group-item")) {
+
+                // Unsubscribe from previous clicked conversation
+                unsubscribe();
+
+                // Update selected conversation
+                selectedConversationId = event.target.id;
+
+                // Subscribe to the new conversation
+                subscribe();
+
+                // Get messages for the selected conversation
+                $.ajax({
+                    type: "GET",
+                    url: `/messages/get/${event.target.id}`,
+                    contentType: "application/json",
+                    success: messages => {
+                        // Clear existing messages
+                        $(".messages").empty();
+
+                        if (messages && messages.length > 0) {
+                            // Iterate through each message and append it to the 'messages' container
+                            messages.forEach(messageDTO => {
+                                showMessage(messageDTO);
+                            });
+                        }
+
+                        displayHiddenElements();
+                    },
+                    error: () => {
+                        console.error("error fetch messages");
+                    }
+                });
+            }
+        });
+
+        // Add event listener for the "Send Message" button
+        sendButton.addEventListener("click", () => {
+            const messageDTO = {
+                conversationId: selectedConversationId,
+                messageText: $("#text-area").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/messages/save",
+                contentType: "application/json",
+                data: JSON.stringify(messageDTO),
+                success: responseMessageDTO => {
+                    // Send message to websocket
+                    sendMessage(responseMessageDTO);
+                    $("#text-area").val("");
+                },
+                error: () => {
+                    console.error("error sending message");
+                }
+            });
+        })
+
+        // Add event listener for the "Leave Conversation" button
+        leaveConversationButton.addEventListener("click", () => {
+            $.ajax({
+                type: "DELETE",
+                url: `/conversation_user/leave/${selectedConversationId}`,
+                contentType: "application/json",
+                success: () => {
+                    document.getElementById(selectedConversationId).remove();
+                    $(".messages").empty();
+                    hideElements();
+                    console.log("conversation left");
+                },
+                error: () => {
+                    console.error("error leaving conversation");
+                }
+            });
+        });
+
+        // Add event listener for the "Account Details" button
+        accountDetailsButton.addEventListener("click", () => {
+            window.location.href = "/account";
+        });
+
+        // Add event listener for the "Delete Conversation" button
+        deleteConversationButton.addEventListener("click", event => {
+            $.ajax({
+                type: "DELETE",
+                url: `/conversations/delete/${selectedConversationId}`,
+                contentType: "application/json",
+                success: () => {
+                    document.getElementById(selectedConversationId).remove();
+                    $(".messages").empty();
+                    hideElements();
+                    console.log("conversation deleted");
+                },
+                error: () => {
+                    console.error("error deleting conversation");
+                }
+            });
+        });
+
+        // Add event listener for the "Logout" button
+        logoutButton.addEventListener("click", () => {
+            disconnect();
+
+            $.ajax({
+                type: "GET",
+                url: "/logout",
+                contentType: "application/json",
+                success: response => {
+                    window.location.href = "/";
+                    console.log(response);
+                    console.log("logout successfully");
+                },
+                error: () => {
+                    console.error("error logout");
+                }
+            });
+        });
+
+        // SOCKET
+        function connect() {
+            const socket = new SockJS('/chat');
+            stompClient = Stomp.over(socket);
+            console.log(stompClient);
+            stompClient.connect({}, () => {
+                console.log("Connected");
+            }, () => {
+                console.log("Connection failed");
+            });
+        }
+
+        function subscribe() {
+            subscription = stompClient.subscribe(`/topic/${selectedConversationId}`, response => {
+                showMessage(JSON.parse(response.body));
+            });
+        }
+
+        function unsubscribe() {
+            if (subscription != null) {
+                subscription.unsubscribe();
+            }
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect(() => {
+                    console.log("Disconnected");
+                }, {});
+            }
+        }
+
+        function sendMessage(messageDTO) {
+            stompClient.send(`/topic/${selectedConversationId}`, {}, JSON.stringify(messageDTO));
+        }
+
+        function showMessage(messageDTO) {
+            const messageElement = $(
+                `<p>${messageDTO.userId}: ${messageDTO.messageText} ${messageDTO.sentDatetime}</p>`
+            );
+            $(".messages").append(messageElement);
+            // Auto scroll down
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        // Other functions
+        function hideElements() {
+            // Make action buttons invisible
+            sendButton.style.visibility = "hidden";
+            inviteButton.style.visibility = "hidden";
+            leaveConversationButton.style.visibility = "hidden";
+            deleteConversationButton.style.visibility = "hidden";
+
+            // Make text area invisible
+            textArea.style.visibility = "hidden";
+        }
+
+        function displayHiddenElements() {
+            // Make action buttons visible
+            sendButton.style.visibility = "visible";
+            inviteButton.style.visibility = "visible";
+            leaveConversationButton.style.visibility = "visible";
+            deleteConversationButton.style.visibility = "visible";
+
+            // Make text area visible
+            textArea.style.visibility = "visible";
+        }
+    </script>
+</body>
+
+</html>
