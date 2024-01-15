@@ -1,0 +1,66 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  &__header {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    gap: 1vw;
+    border-bottom: solid 1px black;
+    &__chats {
+      display: flex;
+      gap: 0.5vw;
+      flex-direction: row;
+      padding-left: 5vw;
+      &__conversation {
+        border-radius: 100%;
+        border: solid 1px black;
+        padding: 15px;
+        cursor: pointer;
+      }
+      margin-right: auto;
+    }
+
+    &__container {
+      margin-left: auto;
+      padding-right: 5vw;
+      right: 0;
+      display: flex;
+      gap: 1vw;
+      text-align: center;
+      align-items: center;
+    }
+  }
+  &__bodyContainer {
+    width: 100vw;
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    flex-basis: auto;
+    padding-top: 2vh;
+
+    &__chatBox {
+      display: flex;
+      flex-direction: column;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1vw;
+      padding-right: 1vw;
+    }
+    &__messageBox {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: auto;
+      margin-top: auto;
+      textarea {
+        resize: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+.formCentered {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+  input {
+    width: 7vw;
+    padding: 8px 20px;
+    size: 1px;
+  }
+  label {
+    width: 7vw;
+  }
+  &__grouper {
+    display: flex;
+    gap: 10px;
+  }
+}
