@@ -3,63 +3,99 @@
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+
+  button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.25s;
+  }
+  button:hover {
+    border-color: rgb(168, 188, 248);
+  }
+  button:focus,
+  button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+
   &__header {
     width: 100vw;
     display: flex;
     flex-direction: row;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
-    gap: 1vw;
-    border-bottom: solid 1px black;
+    padding: 3vh 0vh;
+    gap: 2vw;
+    border-bottom: solid 2px royalblue;
     &__chats {
       display: flex;
-      gap: 0.5vw;
+      gap: 1vw;
       flex-direction: row;
       padding-left: 5vw;
+      overflow-x: auto; // Enable horizontal scrolling
+      margin-right: 20px; // Add right margin to the chat area
+
       &__conversation {
-        border-radius: 100%;
-        border: solid 1px black;
-        padding: 15px;
+        border-radius: 50%; // Changed from 100% for a more rounded look
+        border: solid 2px rgb(168, 188, 248);
+        color: royalblue; // Increased border width
+        padding: 12px; // Slightly reduced padding
+        &.selected {
+          background-color: #b9beff; // Use a slightly darker shade of gray
+        }
         cursor: pointer;
       }
-      margin-right: auto;
     }
 
     &__container {
       margin-left: auto;
       padding-right: 5vw;
-      right: 0;
       display: flex;
-      gap: 1vw;
+      gap: 2vw;
       text-align: center;
       align-items: center;
     }
   }
+
   &__bodyContainer {
     width: 100vw;
-    margin: auto 0;
     display: flex;
     flex-direction: column;
-    flex-basis: auto;
     padding-top: 2vh;
 
     &__chatBox {
+      max-height: 60vh;
       display: flex;
       flex-direction: column;
-      margin-left: auto;
-      margin-right: auto;
-      padding-left: 1vw;
-      padding-right: 1vw;
+      overflow-y: auto; // Enable vertical scrolling
+      gap: 10px;
+
+      margin-left: 10vw; // Centering the message box horizontally
+      margin-right: 10vw; // Centering the message box horizontally
+      align-items: flex-end; // Align messages to the right
+      padding: 0 20px; // Adjusted padding for better spacing
+      &__message {
+        display: flex;
+        padding: 10px 0px;
+      }
     }
+
     &__messageBox {
       display: flex;
       flex-direction: row;
+      gap: 20px;
       justify-content: center;
       align-items: center;
-      margin-bottom: auto;
-      margin-top: auto;
+      margin: auto; // Centering the message box horizontally
+      padding: 1vh 20px; // Adjusted padding for better spacing
       textarea {
-        resize: none;
+        resize: vertical; // Allowing vertical resizing for textarea
+        width: calc(100% - 40px); // Adjusted width for textarea
+        max-width: 80vw; // Added max-width to prevent overflow
+        min-height: 50px; // Added minimum height to textarea
+        padding: 8px; // Adjusted padding for textarea
       }
     }
   }

@@ -8,7 +8,7 @@ export interface ConversationData {
   id: number;
   selected: Boolean;
 }
-export interface Messages {
+export interface MessageData {
   id: number;
   conversationId: number;
   userId: number;
